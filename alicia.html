@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Alicia! ??</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset & Body Styling */
+        body {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fce4ec; /* Very light pink background */
+            color: #4a148c; /* Deep purple text for contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ensures it takes full viewport height */
+            padding: 20px; /* Padding around the whole content */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Main Container for the Birthday Message */
+        .card-container {
+            background-color: #ffffff; /* White background for the card */
+            border-radius: 20px; /* Rounded corners for a soft look */
+            padding: 40px;
+            max-width: 600px; /* Maximum width for readability */
+            width: 100%; /* Make it responsive */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Soft shadow for depth */
+            text-align: center;
+            animation: fadeInScale 1s ease-out forwards; /* Gentle fade-in and scale animation */
+            position: relative; /* Needed for absolute positioning of decorations */
+            overflow: hidden; /* Hide overflowing flower elements */
+        }
+
+        /* Decorative Flower Elements (using pseudo-elements for simplicity) */
+        .card-container::before,
+        .card-container::after {
+            content: '??'; /* Unicode flower emoji */
+            position: absolute;
+            font-size: 4em; /* Large flower size */
+            opacity: 0.6; /* Slightly transparent */
+            z-index: 0; /* Behind the text content */
+            animation: floatAndFade 5s infinite ease-in-out; /* Floating animation */
+        }
+
+        .card-container::before {
+            top: -20px;
+            left: -20px;
+            transform: rotate(-20deg);
+        }
+
+        .card-container::after {
+            bottom: -20px;
+            right: -20px;
+            transform: rotate(30deg);
+            animation-delay: 1.5s; /* Stagger the animation */
+        }
+
+        /* Heading Style */
+        h1 {
+            color: #e91e63; /* Vibrant pink for the main heading */
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700; /* Bold */
+            animation: bounceIn 1.2s ease-out forwards; /* Bouncing animation for emphasis */
+            position: relative; /* To ensure it's above pseudo-elements */
+            z-index: 1;
+        }
+
+        /* Paragraph Text Styles */
+        p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #6a1b9a; /* Slightly lighter purple */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Image Style */
+        .birthday-image {
+            max-width: 80%; /* Ensure image is responsive */
+            height: auto;
+            border-radius: 10px; /* Rounded corners for the image */
+            margin: 25px auto; /* Center the image with vertical spacing */
+            display: block; /* Ensures margin auto works */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for the image */
+            transition: transform 0.3s ease-in-out; /* Smooth transition on hover */
+        }
+
+        .birthday-image:hover {
+            transform: scale(1.02); /* Slight scale on hover */
+        }
+
+        /* Signature Style */
+        .signature {
+            margin-top: 30px;
+            font-style: italic;
+            font-size: 1.05em;
+            color: #880e4f; /* Dark pink for signature */
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Button for LLM Feature */
+        .generate-wish-btn {
+            background-color: #ff69b4; /* Hot pink button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .generate-wish-btn:hover {
+            background-color: #e60073; /* Darker pink on hover */
+            transform: translateY(-2px);
+        }
+
+        .generate-wish-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* LLM Response Area */
+        .llm-response {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #fff0f5; /* Lighter pink background for response */
+            border-left: 5px solid #ff69b4; /* Accent border */
+            border-radius: 10px;
+            font-style: italic;
+            color: #880e4f;
+            min-height: 50px; /* Ensure some height even when empty */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0; /* Hidden initially */
+            transform: translateY(10px);
+            animation: fadeInSlideUp 0.6s ease-out forwards; /* Animation for response */
+            animation-delay: 0.2s; /* Delay after button click */
+            line-height: 1.5;
+        }
+
+        /* Loading Indicator */
+        .loading-indicator {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+            color: #e91e63;
+            font-size: 1em;
+            font-style: normal;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.1);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes floatAndFade {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-10px) rotate(10deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .card-container {
+                padding: 30px 20px; /* Adjust padding for smaller screens */
+            }
+            h1 {
+                font-size: 2.2em; /* Smaller font size for heading on mobile */
+            }
+            p {
+                font-size: 1em; /* Smaller font size for paragraphs on mobile */
+            }
+            .card-container::before,
+            .card-container::after {
+                font-size: 3em; /* Smaller flowers on mobile */
+            }
+            .generate-wish-btn {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+            .llm-response {
+                padding: 15px;
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 15px;
+            }
+            p {
+                font-size: 0.9em;
+                margin-bottom: 10px;
+            }
+            .signature {
+                font-size: 0.95em;
+                margin-top: 20px;
+            }
+            .card-container::before,
+            .card-container::after {
+                font-size: 2.5em; /* Even smaller flowers */
+            }
+            .generate-wish-btn {
+                font-size: 0.95em;
+                padding: 8px 18px;
+            }
+            .llm-response {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <h1>?? Happy Birthday, Alica! ??</h1>
+        
+        <img src="https://i.ibb.co/M4Rc0jv/Whats-App-Image-2025-05-24-at-18-07-40.jpg" alt="Alica's Birthday Image" class="birthday-image">
+        
+        <p>Wishing you a day as beautiful and wonderful as you are.</p>
+        <p>May your birthday be filled with joy, laughter, and all the happiness you deserve.</p>
+        <p>Sending you the warmest wishes on your special day!</p>
+        
+        <button class="generate-wish-btn" id="generateWishBtn">Generate a Special Wish ?</button>
+        <div class="loading-indicator" id="loadingIndicator">Generating...</div>
+        <div class="llm-response" id="llmResponse"></div>
+
+        <p class="signature">With you all the best,<br>Raheem</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateWishBtn = document.getElementById('generateWishBtn');
+            const llmResponseDiv = document.getElementById('llmResponse');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            generateWishBtn.addEventListener('click', async () => {
+                llmResponseDiv.style.opacity = '0'; // Hide previous response
+                llmResponseDiv.style.transform = 'translateY(20px)';
+                loadingIndicator.style.display = 'block'; // Show loading indicator
+                llmResponseDiv.textContent = ''; // Clear previous text
+
+                const prompt = "Write a short, uplifting, and sweet birthday wish for someone named Alica, focusing on happiness, joy, and future success. Keep it concise, like a heartfelt toast, and use a positive, encouraging tone.";
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide the API key at runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        llmResponseDiv.textContent = text;
+                        llmResponseDiv.style.opacity = '1'; // Show new response
+                        llmResponseDiv.style.transform = 'translateY(0)';
+                    } else {
+                        llmResponseDiv.textContent = "Oops! Couldn't generate a wish right now. Please try again.";
+                        llmResponseDiv.style.opacity = '1';
+                        llmResponseDiv.style.transform = 'translateY(0)';
+                        console.error("Unexpected API response structure:", result);
+                    }
+                } catch (error) {
+                    llmResponseDiv.textContent = "Failed to generate wish. Please check your connection and try again.";
+                    llmResponseDiv.style.opacity = '1';
+                    llmResponseDiv.style.transform = 'translateY(0)';
+                    console.error("Error calling Gemini API:", error);
+                } finally {
+                    loadingIndicator.style.display = 'none'; // Hide loading indicator
+                }
+            });
+        });
+    </script>
+</body>
+</html>
